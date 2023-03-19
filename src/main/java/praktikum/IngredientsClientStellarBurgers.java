@@ -5,6 +5,8 @@ import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
 
+
+
 public class IngredientsClientStellarBurgers extends RestAssuredClientStellarBurgers {
     private static final String INGREDIENTS_PATH = "api/ingredients";
 
