@@ -19,6 +19,8 @@ public class OrderClientStellarBurgers extends RestAssuredClientStellarBurgers {
                 .then();
     }
 
+
+
     @Step("Get a list of orders")
     public ValidatableResponse getOrderList(String token) {
         return given()
