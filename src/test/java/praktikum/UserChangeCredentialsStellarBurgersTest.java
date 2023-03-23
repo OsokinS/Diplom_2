@@ -3,6 +3,7 @@ package praktikum;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,11 +15,18 @@ public class UserChangeCredentialsStellarBurgersTest {
     private UserStellarBurgers user;
     private UserClientStellarBurgers userClient;
 
+    private  String token;
+
     @Before
     public void setUp() {
         user = UserStellarBurgers.getRandomUser();
         userClient = new UserClientStellarBurgers();
         userClient.createUser(user);
+    }
+
+    @After
+    public void setDown() {
+        if(token!=null) userClient.deleteUser(token);
     }
 
     @Test

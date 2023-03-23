@@ -16,7 +16,7 @@ public class UserCredentialsStellarBurgers {
     }
 
     public static UserCredentialsStellarBurgers from(UserStellarBurgers user) {
-        return new UserCredentialsStellarBurgers(user.email, user.password);
+        return new UserCredentialsStellarBurgers(user.getEmail(), user.getPassword());
     }
 
     public UserCredentialsStellarBurgers setEmail(String email) {

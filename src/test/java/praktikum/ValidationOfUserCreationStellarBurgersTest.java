@@ -2,6 +2,7 @@ package praktikum;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,9 +18,16 @@ public class ValidationOfUserCreationStellarBurgersTest {
     private int expectedStatus;
     private String expectedErrorMessage;
 
+    private  String token;
+
     @Before
     public void setUp() {
         userClient = new UserClientStellarBurgers();
+    }
+
+    @After
+    public void setDown() {
+        if(token!=null) userClient.deleteUser(token);
     }
 
     public ValidationOfUserCreationStellarBurgersTest(UserStellarBurgers user, int expectedStatus, String expectedErrorMessage) {
@@ -39,7 +47,7 @@ public class ValidationOfUserCreationStellarBurgersTest {
 
     @Test
     @DisplayName("Checking field validation for user creation")
-    public void checkngFieldsValidationUserCreationValidationTest() {
+    public void checkingFieldsValidationUserCreationValidationTest() {
         ValidatableResponse response = userClient.createUser(user);
         int statusCode = response.extract().statusCode();
         String errorMessage = response.extract().path("message");

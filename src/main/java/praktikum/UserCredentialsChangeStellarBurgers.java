@@ -6,7 +6,7 @@ public class UserCredentialsChangeStellarBurgers {
 
     public String email;
     public String password;
-    private String name;
+    public String name;
     private static Faker faker = new Faker();
 
     public UserCredentialsChangeStellarBurgers() {
@@ -19,7 +19,7 @@ public class UserCredentialsChangeStellarBurgers {
     }
 
     public static UserCredentialsChangeStellarBurgers from(UserStellarBurgers user) {
-        return new UserCredentialsChangeStellarBurgers(user.email, user.password, user.name);
+        return new UserCredentialsChangeStellarBurgers(user.getEmail(), user.getPassword(), user.getName());
     }
 
     public UserCredentialsChangeStellarBurgers setEmail(String email) {

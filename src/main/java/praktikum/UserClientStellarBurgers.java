@@ -25,7 +25,8 @@ public class UserClientStellarBurgers extends RestAssuredClientStellarBurgers {
                 .body(credentials)
                 .when()
                 .post(USER_PATH + "/login")
-                .then();
+                .then()
+                .log().all();
     }
 
     @Step("Change user's credentials")
@@ -39,5 +40,17 @@ public class UserClientStellarBurgers extends RestAssuredClientStellarBurgers {
                 .patch(USER_PATH + "/user")
                 .then();
     }
+
+    @Step("Delete user's")
+    public ValidatableResponse deleteUser(String token){
+        return given()
+                .spec(getBaseSpec())
+                .auth().oauth2(token)
+                .and()
+                .when()
+                .delete(USER_PATH + "/user")
+                .then();
+    }
+
 
 }

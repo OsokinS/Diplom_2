@@ -2,6 +2,7 @@ package praktikum;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,11 +16,20 @@ public class UserCreationStellarBurgersTest extends RestAssuredClientStellarBurg
     private UserClientStellarBurgers userClient;
     private UserStellarBurgers user;
 
+    private  String token;
+
     @Before
     public void setUp() {
         user = UserStellarBurgers.getRandomUser();
         userClient = new UserClientStellarBurgers();
     }
+
+    @After
+    public void setDown() {
+        if(token!=null) userClient.deleteUser(token);
+    }
+
+
 
     @Test
     @DisplayName("Check successful user creation")

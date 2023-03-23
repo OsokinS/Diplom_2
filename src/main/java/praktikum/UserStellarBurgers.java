@@ -1,13 +1,19 @@
 package praktikum;
 
 import com.github.javafaker.Faker;
+import lombok.Getter;
+import lombok.With;
 
+@Getter
+@With
 public class UserStellarBurgers {
 
-    public String email;
-    public String password;
-    public String name;
+   private String email;
+   private String password;
+   private String name;
     public static Faker faker = new Faker();
+
+
 
     public UserStellarBurgers() {
     }
@@ -42,6 +48,7 @@ public class UserStellarBurgers {
 
     public static UserStellarBurgers getUserWithoutPassword() {
         return new UserStellarBurgers().setEmail(faker.internet().emailAddress()).setName(faker.name().name());
+      //  return new UserStellarBurgers();
     }
 
     public static UserStellarBurgers getUserWithoutEmail() {

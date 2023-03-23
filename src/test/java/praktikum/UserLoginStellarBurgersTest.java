@@ -2,6 +2,7 @@ package praktikum;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,6 +16,8 @@ public class UserLoginStellarBurgersTest {
     private UserStellarBurgers user;
     private UserClientStellarBurgers userClient;
 
+    private  String token;
+
     @Before
     public void setUp(){
         user = UserStellarBurgers.getRandomUser();
@@ -22,9 +25,14 @@ public class UserLoginStellarBurgersTest {
         userClient.createUser(user);
     }
 
+    @After
+    public void setDown() {
+        if(token!=null) userClient.deleteUser(token);
+    }
+
     @Test
     @DisplayName("Checking the successful authorization of the user")
-    public void checkngUserLoginWithValidDataTest() {
+    public void checkingUserLoginWithValidDataTest() {
         ValidatableResponse response = userClient.loginUser(UserCredentialsStellarBurgers.from(user));
         int statusCode = response.extract().statusCode();
         String accessToken = response.extract().path("accessToken");

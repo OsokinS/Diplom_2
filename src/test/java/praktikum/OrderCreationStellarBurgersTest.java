@@ -2,9 +2,11 @@ package praktikum;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+//import static org.graalvm.compiler.options.OptionType.User;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -18,6 +20,7 @@ public class OrderCreationStellarBurgersTest {
     private UserClientStellarBurgers userClient;
     private UserStellarBurgers user;
     private int orderNumber;
+    private  String token;
 
     @Before
     public void setUp() {
@@ -25,10 +28,15 @@ public class OrderCreationStellarBurgersTest {
         userClient = new UserClientStellarBurgers();
     }
 
+    @After
+    public void setDown() {
+        if(token!=null) userClient.deleteUser(token);
+    }
+
     @Test
     @DisplayName("Checking user can create order with ingredients after authorization")
     public void checkingPossibilityToPlaceAnOrderAfterAuthorizationTest() {
-        String token = userClient.createUser(user).extract().path("accessToken");
+        token = userClient.createUser(user).extract().path("accessToken");
         ingredients = new IngredientsClientStellarBurgers().getIngredients().extract().path("data._id");
         IngredientsHashesStellarBurgers orderIngredients = new IngredientsHashesStellarBurgers(ingredients.get(0));
         ValidatableResponse response = new OrderClientStellarBurgers().createOrder(orderIngredients, token);
@@ -59,7 +67,7 @@ public class OrderCreationStellarBurgersTest {
     @Test
     @DisplayName("Checking user can't create order without ingredients")
     public void checkingThatTheUserCannotPlaceAnOrderWithoutIngredientsTest() {
-        String token = userClient.createUser(user).extract().path("accessToken");
+        token = userClient.createUser(user).extract().path("accessToken");
         IngredientsHashesStellarBurgers orderIngredients = new IngredientsHashesStellarBurgers("");
         ValidatableResponse response = new OrderClientStellarBurgers().createOrder(orderIngredients, token);
         int statusCode = response.extract().statusCode();
@@ -71,8 +79,8 @@ public class OrderCreationStellarBurgersTest {
 
     @Test
     @DisplayName("Checking user can't create order with uncorrected ids of ingredients")
-    public void checkngThatTheUserCannotOrderWithIncorrectIngredientIDsTest() {
-        String token = userClient.createUser(user).extract().path("accessToken");
+    public void checkingThatTheUserCannotOrderWithIncorrectIngredientIDsTest() {
+        token = userClient.createUser(user).extract().path("accessToken");
         IngredientsHashesStellarBurgers orderIngredients = new IngredientsHashesStellarBurgers("qwerty");
         ValidatableResponse response = new OrderClientStellarBurgers().createOrder(orderIngredients, token);
         int statusCode = response.extract().statusCode();

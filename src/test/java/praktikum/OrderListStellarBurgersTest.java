@@ -2,6 +2,7 @@ package praktikum;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,6 +22,8 @@ public class OrderListStellarBurgersTest {
     private OrderClientStellarBurgers orderClient;
     public String orderIngredients;
 
+    private  String token;
+
     @Before
     public void setUp() {
         userClient = new UserClientStellarBurgers();
@@ -28,6 +31,11 @@ public class OrderListStellarBurgersTest {
         orderClient = new OrderClientStellarBurgers();
         ingredients = new IngredientsClientStellarBurgers().getIngredients().extract().path("data._id");
         orderIngredients = ingredients.get(0);
+    }
+
+    @After
+    public void setDown() {
+        if(token!=null) userClient.deleteUser(token);
     }
 
     @Test
@@ -49,7 +57,7 @@ public class OrderListStellarBurgersTest {
 
     @Test
     @DisplayName("Checking user can't get order list without without authorization")
-    public void checkngThatUserCannotGetListOfOrdersWithoutAuthorizationTest() {
+    public void checkingThatUserCannotGetListOfOrdersWithoutAuthorizationTest() {
         ValidatableResponse responseList = orderClient.getOrderList("");
         int statusCode = responseList.extract().statusCode();
         boolean isNotCanGetOrderList = responseList.extract().path("message").equals("You should be authorised");
