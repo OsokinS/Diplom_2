@@ -15,7 +15,7 @@ public class UserChangeCredentialsStellarBurgersTest {
     private UserStellarBurgers user;
     private UserClientStellarBurgers userClient;
 
-    private  String token;
+    private String token;
 
     @Before
     public void setUp() {
@@ -26,15 +26,16 @@ public class UserChangeCredentialsStellarBurgersTest {
 
     @After
     public void setDown() {
-        if(token!=null) userClient.deleteUser(token);
+        if (token != null) userClient.deleteUser(token);
     }
 
     @Test
     @DisplayName("Checking user can change credentials after authorization")
     public void checkingTheAbilityToChangeUserCredentialsAfterAuthorizationTest() {
-        String accessToken = userClient.loginUser(UserCredentialsStellarBurgers.from(user)).extract().path("accessToken");
-        accessToken = StringUtils.remove(accessToken, "Bearer ");
-        ValidatableResponse response = userClient.changeUser(UserCredentialsChangeStellarBurgers.changeUserCredentials(), accessToken);
+
+        token = userClient.loginUser(UserCredentialsStellarBurgers.from(user)).extract().path("accessToken");
+        token = StringUtils.remove(token, "Bearer ");
+        ValidatableResponse response = userClient.changeUser(UserCredentialsChangeStellarBurgers.changeUserCredentials(), token);
         int statusCode = response.extract().statusCode();
         boolean isChangesSuccess = response.extract().path("success");
 
@@ -46,6 +47,7 @@ public class UserChangeCredentialsStellarBurgersTest {
     @DisplayName("Checking user can't change credentials without authorization")
     public void checkingThatTheUserCannotChangeCredentialsWithoutAuthorizationTest() {
         ValidatableResponse response = userClient.changeUser(UserCredentialsChangeStellarBurgers.changeUserCredentials(), "");
+        token = response.extract().path("accessToken");
         int statusCode = response.extract().statusCode();
         boolean isNotSuccessChanges = response.extract().path("message").equals("You should be authorised");
 

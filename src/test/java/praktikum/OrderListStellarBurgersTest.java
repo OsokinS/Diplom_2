@@ -41,7 +41,7 @@ public class OrderListStellarBurgersTest {
     @Test
     @DisplayName("Checking user can get order list with after authorization")
     public void checkingThatTheUserCanGetListOfOrderAfterAuthorizationTest() {
-        String token = userClient.createUser(user).extract().path("accessToken");
+        token = userClient.createUser(user).extract().path("accessToken");
         IngredientsHashesStellarBurgers createOrder = new IngredientsHashesStellarBurgers(orderIngredients);
         ValidatableResponse responseOrderCreation = new OrderClientStellarBurgers().createOrder(createOrder, token);
 

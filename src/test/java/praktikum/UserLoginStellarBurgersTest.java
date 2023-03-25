@@ -16,10 +16,10 @@ public class UserLoginStellarBurgersTest {
     private UserStellarBurgers user;
     private UserClientStellarBurgers userClient;
 
-    private  String token;
+    private String token;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         user = UserStellarBurgers.getRandomUser();
         userClient = new UserClientStellarBurgers();
         userClient.createUser(user);
@@ -27,7 +27,7 @@ public class UserLoginStellarBurgersTest {
 
     @After
     public void setDown() {
-        if(token!=null) userClient.deleteUser(token);
+        if (token != null) userClient.deleteUser(token);
     }
 
     @Test
@@ -35,12 +35,12 @@ public class UserLoginStellarBurgersTest {
     public void checkingUserLoginWithValidDataTest() {
         ValidatableResponse response = userClient.loginUser(UserCredentialsStellarBurgers.from(user));
         int statusCode = response.extract().statusCode();
-        String accessToken = response.extract().path("accessToken");
+        token = response.extract().path("accessToken");
         String refreshToken = response.extract().path("refreshToken");
 
-        assertThat ("Некорректный код статуса", statusCode, equalTo(200));
+        assertThat("Некорректный код статуса", statusCode, equalTo(200));
         assertThat("Отсутствует refreshToken в теле ответа", refreshToken, notNullValue());
-        assertTrue("Некорректный accessToken в теле ответа", accessToken.startsWith("Bearer"));
+        assertTrue("Некорректный accessToken в теле ответа", token.startsWith("Bearer"));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class UserLoginStellarBurgersTest {
         ValidatableResponse response = userClient.loginUser(UserCredentialsStellarBurgers.getUserPermissionWithNotValidCredentials());
         int statusCode = response.extract().statusCode();
         boolean isNotValidUserNotCreated = response.extract().path("message").equals("email or password are incorrect");
-
+        token = response.extract().path("accessToken");
         assertThat("Некорректный код статуса", statusCode, equalTo(401));
         assertThat("Удалось авторизоваться пользователем с некорректными данными", isNotValidUserNotCreated);
     }
