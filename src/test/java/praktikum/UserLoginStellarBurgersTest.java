@@ -22,12 +22,13 @@ public class UserLoginStellarBurgersTest {
     public void setUp() {
         user = UserStellarBurgers.getRandomUser();
         userClient = new UserClientStellarBurgers();
-        userClient.createUser(user);
+        token = userClient.createUser(user).extract().path("accessToken");
     }
 
     @After
     public void setDown() {
-        if (token != null) userClient.deleteUser(token);
+        if (token != null)
+            userClient.deleteUser(token);
     }
 
     @Test
@@ -35,7 +36,6 @@ public class UserLoginStellarBurgersTest {
     public void checkingUserLoginWithValidDataTest() {
         ValidatableResponse response = userClient.loginUser(UserCredentialsStellarBurgers.from(user));
         int statusCode = response.extract().statusCode();
-        token = response.extract().path("accessToken");
         String refreshToken = response.extract().path("refreshToken");
 
         assertThat("Некорректный код статуса", statusCode, equalTo(200));
@@ -49,7 +49,6 @@ public class UserLoginStellarBurgersTest {
         ValidatableResponse response = userClient.loginUser(UserCredentialsStellarBurgers.getUserPermissionWithNotValidCredentials());
         int statusCode = response.extract().statusCode();
         boolean isNotValidUserNotCreated = response.extract().path("message").equals("email or password are incorrect");
-        token = response.extract().path("accessToken");
         assertThat("Некорректный код статуса", statusCode, equalTo(401));
         assertThat("Удалось авторизоваться пользователем с некорректными данными", isNotValidUserNotCreated);
     }

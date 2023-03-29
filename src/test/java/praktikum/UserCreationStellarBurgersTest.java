@@ -6,6 +6,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -15,8 +18,7 @@ public class UserCreationStellarBurgersTest extends RestAssuredClientStellarBurg
 
     private UserClientStellarBurgers userClient;
     private UserStellarBurgers user;
-
-    private  String token;
+    private List<String> token = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -26,9 +28,14 @@ public class UserCreationStellarBurgersTest extends RestAssuredClientStellarBurg
 
     @After
     public void setDown() {
-        if(token!=null) userClient.deleteUser(token);
+        if (token != null) {
+            for (String s : token) {
+                if(s != null) {
+                    userClient.deleteUser(s);
+                }
+            }
+        }
     }
-
 
 
     @Test
@@ -37,19 +44,19 @@ public class UserCreationStellarBurgersTest extends RestAssuredClientStellarBurg
         ValidatableResponse response = userClient.createUser(user);
         int statusCode = response.extract().statusCode();
         boolean isUserCreated = response.extract().path("success");
-        token = response.extract().path("accessToken");
+        token.add(response.extract().path("accessToken"));
 
         assertTrue("Пользователь не создан", isUserCreated);
         assertThat("Некорректный код статуса", statusCode, equalTo(200));
-        assertTrue("Некорректный accessToken в теле ответа", token.startsWith("Bearer"));
+        assertTrue("Некорректный accessToken в теле ответа", token.get(0).startsWith("Bearer"));
     }
 
     @Test
     @DisplayName("Check it's impossible to create two identical users")
-    public void checkingTheImpossiilityOfCreatingIdenticalUsersTest() {
-        userClient.createUser(user);
+    public void checkingImpossilityOfCreatingIdenticalUsersTest() {
+        token.add(userClient.createUser(user).extract().path("accessToken"));
         ValidatableResponse response = userClient.createUser(user);
-        token =  response.extract().path("accessToken");
+        token.add(response.extract().path("accessToken"));
         int statusCode = response.extract().statusCode();
         boolean isIdenticalUserNotCreated = response.extract().path("message").equals("User already exists");
 

@@ -57,9 +57,7 @@ public class ValidationOfUserCreationStellarBurgersTest {
     public void checkingFieldsValidationUserCreationValidationTest() {
         ValidatableResponse response = userClient.createUser(user);
         int statusCode = response.extract().statusCode();
-        user = UserStellarBurgers.getRandomUser();
         String errorMessage = response.extract().path("message");
-
         assertEquals("Некорректный код статуса", expectedStatus, statusCode);
         assertEquals("Некорректное сообщение об ошибке", expectedErrorMessage, errorMessage);
     }
